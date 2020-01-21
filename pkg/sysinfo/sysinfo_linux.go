@@ -216,6 +216,12 @@ func applyCPUSetCgroupInfo(info *SysInfo, cgMounts map[string]string) []string {
 // applyHugetlbCgroupInfo reads the cpuset information from the cpuset cgroup mount point.
 func applyHugetlbCgroupInfo(info *SysInfo, cgMounts map[string]string) []string {
 	var warnings []string
+	mountPoint, ok := cgMounts["hugetlb"]
+	if !ok {
+		warnings = append(warnings, "Unable to find hugetlb cgroup in mounts")
+		return warnings
+	}
+
 	hugepageSizes, err := getHugePageSizes()
 	if err != nil {
 		warnings = append(warnings, "Cannot read directory /sys/kernel/mm/hugepages")

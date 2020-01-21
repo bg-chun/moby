@@ -570,6 +570,7 @@ func verifyPlatformContainerResources(resources *containertypes.Resources, sysIn
 		return warnings, fmt.Errorf("Requested memory nodes are not available - requested %s, available: %s", resources.CpusetMems, sysInfo.Mems)
 	}
 
+
 	// hugetlb subsystem checks and adjustments
 	if len(sysInfo.HugetlbLimits) == 0 {
 		warnings = append(warnings, "Your kernel does not support hugetlb limit. --hugetlb-limit discarded.")
@@ -577,9 +578,10 @@ func verifyPlatformContainerResources(resources *containertypes.Resources, sysIn
 	} else {
 		validHugepageLimits := []containertypes.HugepageLimit{}
 		for _, hpl := range resources.HugepageLimits {
-			if _, exist := sysInfo.HugetlbLimits[hpl.PageSize]; !exist {
-				warnings = append(warnings, "Your kernel does not has %v hugepage.", hpl.PageSize)
-			} else {
+			if _, exist := sysInfo.HugetlbLimits[hpl.PageSize]; exist {
+				return warnings, fmt.Errorf("Your kernel does not has %s hugepage", hpl.PageSize)
+			} 
+			else {
 				validHugepageLimits = append(validHugepageLimits, hpl)
 			}
 		}
