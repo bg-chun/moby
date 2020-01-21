@@ -570,7 +570,6 @@ func verifyPlatformContainerResources(resources *containertypes.Resources, sysIn
 		return warnings, fmt.Errorf("Requested memory nodes are not available - requested %s, available: %s", resources.CpusetMems, sysInfo.Mems)
 	}
 
-
 	// hugetlb subsystem checks and adjustments
 	if len(sysInfo.HugetlbLimits) == 0 {
 		warnings = append(warnings, "Your kernel does not support hugetlb limit. --hugetlb-limit discarded.")
